@@ -1,0 +1,24 @@
+import paramiko
+import os
+
+def generate_ssh_keypair():
+    # Generate an RSA key pair
+    key = paramiko.RSAKey.generate(2048)
+
+    # Create a folder to store the keys
+    os.makedirs("ssh_keys", exist_ok=True)
+
+    # Save the private key
+    private_key_path = os.path.join("ssh_keys", "private_key")
+    key.write_private_key_file(private_key_path)
+
+    # Save the public key
+    public_key_path = os.path.join("ssh_keys", "public_key")
+    with open(public_key_path, "w") as f:
+        f.write(f"ssh-rsa {key.get_base64()}")
+
+    return private_key_path, public_key_path
+
+private_key, public_key = generate_ssh_keypair()
+print(f"Private key saved to: {private_key}")
+print(f"Public key saved to: {public_key}")
